@@ -1,0 +1,36 @@
+:root {
+    /* Primary Theme Colors */
+    --primary: #00796b; /* Deep Teal */
+    --secondary: #ffb300; /* Amber/Orange Accent */
+
+    /* Background & Surface */
+    --background: #f8f9fa;
+    --surface: #ffffff;
+
+    /* Text & Typography */
+    --text: #212529;
+    --text-secondary: #6c757d;
+
+    /* State Colors */
+    --error: #d32f2f;
+    --success: #4caf50;
+}
+
+/* Dark mode support */
+[data-theme="dark"] {
+    /* Primary Theme Colors */
+    --primary: #4db6ac; /* Lighter Teal */
+    --secondary: #ffca28; /* Lighter Amber Accent */
+
+    /* Background & Surface */
+    --background: #121212;
+    --surface: #1e1e1e;
+
+    /* Text & Typography */
+    --text: #e0e0e0;
+    --text-secondary: #a0a0a0;
+
+    /* State Colors (lighter variants) */
+    --error: #ef9a9a;
+    --success: #81c784;
+}
