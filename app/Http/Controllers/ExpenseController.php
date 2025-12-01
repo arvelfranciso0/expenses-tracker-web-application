@@ -13,7 +13,11 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        //
+        $expenses = Expense::all();
+        return Inertia('Expenses', [
+            'expenses' => $expenses,
+            'title' => 'Expenses',
+        ]);
     }
 
     /**
