@@ -5,6 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Expense;
 use App\Http\Requests\StoreExpenseRequest;
 use App\Http\Requests\UpdateExpenseRequest;
+use App\Models\Budget;
+use App\Models\Category;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\RedirectResponse;
+
 
 class ExpenseController extends Controller
 {
@@ -13,13 +21,22 @@ class ExpenseController extends Controller
      */
     public function index()
     {
-        //
+        $data = User::with('expenses.category')->find(auth()->id());
+        $categories = Category::all();
+        return Inertia::render(
+            'Expense',
+            [
+                'title' => 'Expense',
+                'data' => $data,
+                'categories' => $categories
+            ]
+        );
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         //
     }
@@ -27,9 +44,13 @@ class ExpenseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreExpenseRequest $request)
+    public function store(StoreExpenseRequest $request): RedirectResponse
     {
-        //
+        $expense = new Expense($request->validated());
+        $expense->user_id = auth()->id();
+        $expense->save();
+
+        return Redirect::route('expense.index');
     }
 
     /**
