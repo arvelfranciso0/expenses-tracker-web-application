@@ -15,13 +15,24 @@ class Expense extends Model
         'category_id',
         'expenses_date',
         'description',
+        'budget_id',
         'user_id',
     ];
+
+    protected static function booted()
+    {
+        static::creating(function ($expense) {
+            if (! isset($expense->user_id)) {
+                $expense->user_id = auth()->id();
+            }
+        });
+    }
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

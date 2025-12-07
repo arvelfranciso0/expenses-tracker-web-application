@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Budget;
 use Illuminate\Database\Seeder;
 
 class BudgetSeeder extends Seeder
@@ -12,6 +12,12 @@ class BudgetSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $budgets = [
+            ['user_id' => 1, 'amount_limit' => 10000, 'source' => 'Salary', 'is_active' => 1],
+        ];
+
+        foreach ($budgets as $budget) {
+            Budget::create($budget);
+        }
     }
 }

@@ -4,10 +4,10 @@ import { ref, onMounted, computed } from "vue";
 import { CircleUserRound, Moon, Sun, Menu } from "lucide-vue-next";
 import { Head } from "@inertiajs/vue3";
 import { Link } from "@inertiajs/vue3";
+
 const sidebarOpen = ref(false);
 const page = usePage();
 const title = computed(() => page.props.title || "Default Title");
-
 const isDark = ref(false);
 
 onMounted(() => {
@@ -58,21 +58,48 @@ const applyTheme = () => {
             <nav class="mt-4 space-y-1">
                 <Link
                     :href="route('dashboard.index')"
-                    class="block px-5 py-3 text-gray-700 dark:text-gray-100 hover:bg-amber-50 dark:hover:text-amber-600 hover:text-amber-600 font-medium transition"
+                    :class="
+                        page.url.startsWith('/dashboard')
+                            ? 'dark:bg-gray-700 dark:text-amber-600 bg-amber-100 text-amber-600'
+                            : 'dark:text-gray-100 text-gray-700 '
+                    "
+                    class="block px-5 py-3 hover:bg-amber-50 dark:hover:bg-gray-700 dark:hover:text-amber-600 font-medium transition"
                 >
                     Dashboard
                 </Link>
 
                 <Link
                     :href="route('expense.index')"
-                    class="block px-5 py-3 text-gray-700 dark:text-gray-100 hover:bg-amber-50 dark:hover:text-amber-600 hover:text-amber-600 font-medium transition"
+                    :class="
+                        page.url.startsWith('/expense')
+                            ? 'dark:bg-gray-700 dark:text-amber-600 bg-amber-100 text-amber-600'
+                            : 'dark:text-gray-100 text-gray-700 '
+                    "
+                    class="block px-5 py-3 hover:bg-amber-50 dark:hover:bg-gray-700 dark:hover:text-amber-600 font-medium transition"
                 >
                     Expenses
                 </Link>
 
                 <Link
+                    :href="route('budget.index')"
+                    :class="
+                        page.url.startsWith('/budget')
+                            ? 'dark:bg-gray-700 dark:text-amber-600 bg-amber-100 text-amber-600'
+                            : 'dark:text-gray-100 text-gray-700 '
+                    "
+                    class="block px-5 py-3 hover:bg-amber-50 dark:hover:bg-gray-700 dark:hover:text-amber-600 font-medium transition"
+                >
+                    Budget
+                </Link>
+
+                <Link
                     :href="route('profile.edit')"
-                    class="block px-5 py-3 text-gray-700 dark:text-gray-100 hover:bg-amber-50 dark:hover:text-amber-600 hover:text-amber-600 font-medium transition"
+                    :class="
+                        page.url.startsWith('/profile')
+                            ? 'dark:bg-gray-700 dark:text-amber-600 bg-amber-100 text-amber-600'
+                            : 'dark:text-gray-100 text-gray-700 '
+                    "
+                    class="block px-5 py-3 hover:bg-amber-50 dark:hover:bg-gray-700 dark:hover:text-amber-600 font-medium transition"
                 >
                     Profile
                 </Link>
@@ -105,7 +132,7 @@ const applyTheme = () => {
             >
                 <button
                     @click="sidebarOpen = true"
-                    class="lg:hidden text-gray-700"
+                    class="lg:hidden text-gray-700 dark:text-gray-50"
                 >
                     <Menu />
                 </button>

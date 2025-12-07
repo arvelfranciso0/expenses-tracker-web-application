@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Budget;
 use App\Http\Requests\StoreBudgetRequest;
 use App\Http\Requests\UpdateBudgetRequest;
+use App\Models\Budget;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
 
 class BudgetController extends Controller
 {
@@ -13,7 +16,14 @@ class BudgetController extends Controller
      */
     public function index()
     {
-        //
+        $budgets = Budget::where('user_id', auth()->id());
+
+        return Inertia::render(
+            'Budget', [
+                'title' => 'Budget',
+                'budgets' => $budgets,
+            ]
+        );
     }
 
     /**
@@ -27,9 +37,13 @@ class BudgetController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBudgetRequest $request)
+    public function store(StoreBudgetRequest $request): RedirectResponse
     {
-        //
+        $validated_data = $request->validated();
+
+        Budget::create($validated_data);
+
+        return Redirect::route('budget.index');
     }
 
     /**
@@ -43,15 +57,12 @@ class BudgetController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Budget $budget)
-    {
-        //
-    }
+    public function edit(Budget $budget) {}
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBudgetRequest $request, Budget $budget)
+    public function update(UpdateBudgetRequest $request)
     {
         //
     }

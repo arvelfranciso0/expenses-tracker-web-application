@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Expense;
 use App\Http\Requests\StoreExpenseRequest;
 use App\Http\Requests\UpdateExpenseRequest;
 use App\Models\Budget;
 use App\Models\Category;
+use App\Models\Expense;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Http\RedirectResponse;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
 
 class ExpenseController extends Controller
 {
@@ -23,12 +22,17 @@ class ExpenseController extends Controller
     {
         $data = User::with('expenses.category')->find(auth()->id());
         $categories = Category::all();
+        $budget = Budget::where('user_id', auth()->id())->where('is_active', 1)->first();
+
+        // dd($budgets);
+
         return Inertia::render(
             'Expense',
             [
                 'title' => 'Expense',
                 'data' => $data,
-                'categories' => $categories
+                'categories' => $categories,
+                'budget' => $budget,
             ]
         );
     }
@@ -47,7 +51,6 @@ class ExpenseController extends Controller
     public function store(StoreExpenseRequest $request): RedirectResponse
     {
         $expense = new Expense($request->validated());
-        $expense->user_id = auth()->id();
         $expense->save();
 
         return Redirect::route('expense.index');

@@ -26,13 +26,17 @@ const props = defineProps({
                     />
                     <StatCard
                         label="Total Montly Expenses"
-                        :value="`${props.data?.currency} ${props.data?.expenses_monthly}`"
+                        :value="`${props.data?.currency} ${
+                            props.data?.expenses_monthly ?? 0
+                        }`"
                         :icon="Banknote"
                         class="w-1/3"
                     />
                     <StatCard
                         label="Total Yearly Expenses"
-                        :value="`${props.data?.currency} ${props.data?.expenses_yearly}`"
+                        :value="`${props.data?.currency} ${
+                            props.data?.expenses_yearly ?? 0
+                        }`"
                         :icon="PiggyBank"
                         class="w-1/3"
                     />

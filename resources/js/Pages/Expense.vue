@@ -11,6 +11,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 const props = defineProps({
     data: Object,
     categories: Array,
+    budget: Array,
 });
 
 const form = useForm({
@@ -18,6 +19,7 @@ const form = useForm({
     category_id: "",
     expenses_date: "",
     description: "",
+    budget_id: props.budget?.is_active ? props.budget.id : "",
 });
 
 const submit = () => {
@@ -40,6 +42,24 @@ const submit = () => {
                     class="w-2/5 flex flex-col gap-4"
                 >
                     <div class="">
+                        <Label size="lg" for="budget_source"
+                            >Budget Source</Label
+                        >
+                        <Select
+                            id="category"
+                            v-model="form.budget_id"
+                            :required="true"
+                            :disabled="true"
+                        >
+                            <option
+                                :key="props.budget.id"
+                                :value="props.budget.id"
+                            >
+                                {{ props.budget.source }}
+                            </option>
+                        </Select>
+                    </div>
+                    <div class="">
                         <Label size="lg" for="amount">Amount</Label>
                         <TextInput
                             id="amount"
@@ -56,15 +76,17 @@ const submit = () => {
                         <Select
                             id="category"
                             v-model="form.category_id"
-                            :options="
-                                props.categories?.map((category) => ({
-                                    value: category.id,
-                                    label: category.name,
-                                }))
-                            "
                             placeholder="Select category"
                             :required="true"
-                        />
+                        >
+                            <option
+                                v-for="category in props.categories"
+                                :key="category.id"
+                                :value="category.id"
+                            >
+                                {{ category.name }}
+                            </option>
+                        </Select>
                     </div>
                     <div class="">
                         <Label size="lg" for="date">Date</Label>
@@ -106,7 +128,7 @@ const submit = () => {
                         ]"
                     >
                         <tr
-                            class="border-b hover:bg-gray-50"
+                            class="border-b hover:bg-gray-50 dark:hover:text-gray-700"
                             v-for="expense in props.data?.expenses"
                         >
                             <td class="px-4 py-3">{{ expense.id }}</td>

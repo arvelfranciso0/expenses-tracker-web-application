@@ -22,7 +22,20 @@ class StoreBudgetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'amount_limit' => ['required', 'numeric'],
+            'source' => ['required', 'string'],
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+
+        $this->merge([
+            'source' => ucfirst($this->input('name')),
+        ]);
+
     }
 }

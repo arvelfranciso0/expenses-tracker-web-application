@@ -25,7 +25,8 @@ class StoreExpenseRequest extends FormRequest
             'amount' => ['required', 'numeric'],
             'category_id' => ['required', 'numeric'],
             'description' => ['required', 'string', 'max:50'],
-            'expenses_date' => ['required', 'date_format:Y-m-d']
+            'expenses_date' => ['required', 'date_format:Y-m-d'],
+            'budget_id' => ['required', 'numeric'],
         ];
     }
 }
