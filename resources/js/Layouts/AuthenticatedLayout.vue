@@ -50,7 +50,9 @@ const applyTheme = () => {
             ]"
         >
             <div class="h-16 flex items-center px-6 border-b border-gray-200">
-                <h1 class="text-xl font-bold text-amber-600">MyApp</h1>
+                <h1 class="text-xl font-bold text-amber-600">
+                    Expenses Tracker
+                </h1>
             </div>
 
             <nav class="mt-4 space-y-1">
@@ -66,6 +68,13 @@ const applyTheme = () => {
                     class="block px-5 py-3 text-gray-700 dark:text-gray-100 hover:bg-amber-50 dark:hover:text-amber-600 hover:text-amber-600 font-medium transition"
                 >
                     Expenses
+                </Link>
+
+                <Link
+                    :href="route('profile.edit')"
+                    class="block px-5 py-3 text-gray-700 dark:text-gray-100 hover:bg-amber-50 dark:hover:text-amber-600 hover:text-amber-600 font-medium transition"
+                >
+                    Profile
                 </Link>
 
                 <!-- <Link
@@ -111,7 +120,7 @@ const applyTheme = () => {
                     <span
                         class="text-gray-500 dark:text-gray-100 text-sm hidden sm:block"
                     >
-                        Hello, User
+                        Hello, {{ $page.props.auth.user.name }}
                     </span>
 
                     <CircleUserRound class="w-6 h-6" />

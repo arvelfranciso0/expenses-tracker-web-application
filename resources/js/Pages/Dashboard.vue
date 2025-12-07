@@ -5,6 +5,10 @@ import Button from "@/Components/Button.vue";
 import Table from "@/Components/Table.vue";
 import Label from "@/Components/Label.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+
+const props = defineProps({
+    data: Object,
+});
 </script>
 
 <template>
@@ -16,19 +20,19 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
                 >
                     <StatCard
                         label="Total Budget"
-                        value="20000"
+                        :value="`${props.data.currency}`"
                         :icon="Landmark"
                         class="w-1/3"
                     />
                     <StatCard
-                        label="Total Expenses"
-                        value="20000"
+                        label="Total Montly Expenses"
+                        :value="`${props.data?.currency} ${props.data?.expenses_monthly}`"
                         :icon="Banknote"
                         class="w-1/3"
                     />
                     <StatCard
-                        label="Total Yearly"
-                        value="20000"
+                        label="Total Yearly Expenses"
+                        :value="`${props.data?.currency} ${props.data?.expenses_yearly}`"
                         :icon="PiggyBank"
                         class="w-1/3"
                     />
@@ -77,12 +81,19 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
                         >
                             <tr
                                 class="border-b hover:bg-gray-50 dark:hover:text-gray-700"
+                                v-for="expense in props.data?.expenses"
                             >
-                                <td class="px-4 py-3">1</td>
-                                <td class="px-4 py-3">Loan</td>
-                                <td class="px-4 py-3">10000</td>
-                                <td class="px-4 py-3">Paying for the loan.</td>
-                                <td class="px-4 py-3">12/6/2025</td>
+                                <td class="px-4 py-3">{{ expense.id }}</td>
+                                <td class="px-4 py-3">
+                                    {{ expense?.category.name }}
+                                </td>
+                                <td class="px-4 py-3">{{ expense.amount }}</td>
+                                <td class="px-4 py-3">
+                                    {{ expense.description }}
+                                </td>
+                                <td class="px-4 py-3">
+                                    {{ expense.expenses_date }}
+                                </td>
                             </tr>
                         </Table>
                     </div>
