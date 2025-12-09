@@ -29,7 +29,7 @@ const form = useForm({
                 Profile Information
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                 Update your account's profile information and email address.
             </p>
         </header>
@@ -89,7 +89,9 @@ const form = useForm({
             </div>
 
             <div class="flex items-center gap-4">
-                <Button :disabled="form.processing">Save</Button>
+                <Button type="submit" class="px-20" :disabled="form.processing"
+                    >Save</Button
+                >
 
                 <Transition
                     enter-active-class="transition ease-in-out"

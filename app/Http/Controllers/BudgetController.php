@@ -16,12 +16,14 @@ class BudgetController extends Controller
      */
     public function index()
     {
-        $budgets = Budget::where('user_id', auth()->id());
+        $budgets = Budget::where('user_id', auth()->id())->orderByDesc('is_active')->get();
+        $activeBudget = $budgets->firstWhere('is_active', auth()->id());
 
         return Inertia::render(
             'Budget', [
                 'title' => 'Budget',
                 'budgets' => $budgets,
+                'activeBudget' => $activeBudget,
             ]
         );
     }
@@ -39,9 +41,10 @@ class BudgetController extends Controller
      */
     public function store(StoreBudgetRequest $request): RedirectResponse
     {
-        $validated_data = $request->validated();
 
-        Budget::create($validated_data);
+        $validatedReq = $request->validated();
+
+        Budget::create($validatedReq);
 
         return Redirect::route('budget.index');
     }
@@ -62,16 +65,36 @@ class BudgetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBudgetRequest $request)
+    public function update(UpdateBudgetRequest $request, $id)
     {
-        //
+
+        $budget = Budget::findOrFail($id);
+
+        $this->authorize('update', $budget);
+
+        if ($budget->is_active) {
+            Redirect::back()->with(
+                'error', 'This budget is already active.',
+            );
+        }
+
+        $budget->activate();
+
+        return Redirect::route('budget.index')->with('success', 'Budget activated!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Budget $budget)
+    public function destroy($id)
     {
-        //
+        $budget = Budget::find($id);
+
+        if (! $budget || $budget->is_active) {
+            return Redirect::back()->with('error', "This budget can't be deleted!");
+        }
+        $budget->delete();
+
+        return Redirect::route('budget.index')->with('success', 'Budget deleted!');
     }
 }

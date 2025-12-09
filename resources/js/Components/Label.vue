@@ -2,7 +2,7 @@
     <label
         :for="for"
         :class="[
-            'block font-medium text-gray-700 dark:text-gray-50',
+            'block font-medium  mb-1',
             sizeClass,
             disabled ? 'opacity-60 cursor-not-allowed' : '',
         ]"
@@ -38,7 +38,8 @@ const props = defineProps({
 
 const sizeClass = computed(() => {
     return {
-        sm: "text-sm",
+        xs: "text-xs",
+        sm: "text-sm text-gray-500",
         md: "text-base",
         lg: "text-lg",
     }[props.size];

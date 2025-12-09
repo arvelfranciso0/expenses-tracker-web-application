@@ -19,7 +19,7 @@ defineExpose({ focus: () => textarea.value.focus() });
 
 <template>
     <textarea
-        class="border-gray-300 dark:bg-gray-800 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full"
+        class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm w-full"
         v-model="model"
         ref="textarea"
     ></textarea>

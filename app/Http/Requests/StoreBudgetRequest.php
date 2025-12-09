@@ -11,7 +11,12 @@ class StoreBudgetRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        if (auth()->id()) {
+            return true;
+        }
+
         return false;
+
     }
 
     /**
@@ -34,7 +39,7 @@ class StoreBudgetRequest extends FormRequest
     {
 
         $this->merge([
-            'source' => ucfirst($this->input('name')),
+            'source' => ucfirst($this->input('source')),
         ]);
 
     }

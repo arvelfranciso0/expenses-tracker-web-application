@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from "vue";
+import { Link } from "@inertiajs/vue3";
 
 const props = defineProps({
     href: {
@@ -18,7 +19,13 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    method: {
+        type: String,
+        default: "post",
+    },
 });
+
+const emit = defineEmits(["clicked"]);
 
 const classes = computed(() => {
     switch (props.variant) {
@@ -34,10 +41,16 @@ const classes = computed(() => {
 });
 </script>
 <template>
-    <!-- If `href` exists → render <a> -->
-    <a v-if="href" :href="href" :class="classes">
+    <Link
+        v-if="href"
+        :method="method"
+        :href="href"
+        :class="[classes, disabled ? 'opacity-50 cursor-not-allowed' : '']"
+        :disabled="disabled"
+        as="button"
+    >
         <slot />
-    </a>
+    </Link>
 
     <!-- Otherwise → render <button> -->
     <button
@@ -45,6 +58,7 @@ const classes = computed(() => {
         :type="type"
         :disabled="disabled"
         :class="[classes, disabled ? 'opacity-50 cursor-not-allowed' : '']"
+        @click="emit('clicked')"
     >
         <slot />
     </button>
