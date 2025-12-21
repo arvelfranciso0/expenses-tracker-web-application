@@ -52,4 +52,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Budget::class);
     }
+
+    public function activeBudget()
+    {
+        return $this->hasOne(Budget::class)
+            ->where('is_active', true);
+    }
 }

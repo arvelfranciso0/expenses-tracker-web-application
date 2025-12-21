@@ -11,7 +11,11 @@ class StoreExpenseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        if (auth()->id()) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

@@ -1,106 +1,210 @@
 <script setup>
 import StatCard from "@/Components/StatCard.vue";
-import { Landmark, Banknote, PiggyBank, Plus } from "lucide-vue-next";
+import {
+    Landmark,
+    Banknote,
+    PiggyBank,
+    Plus,
+    TrendingDown,
+} from "lucide-vue-next"; // Added TrendingDown for another metric
 import Button from "@/Components/Button.vue";
 import Table from "@/Components/Table.vue";
 import Label from "@/Components/Label.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import dayjs from "dayjs";
+import { formatAmount } from "@/composables/useCurrency";
 
 const props = defineProps({
     data: Object,
+    remainingAmount: Number,
 });
+
+// Helper for the helper text
+const activeBudgetDateRange = props.data?.active_budget
+    ? `(${dayjs(props.data.active_budget.start_date).format("MMM D")} - ${dayjs(
+          props.data.active_budget.end_date
+      ).format("MMM D, YYYY")})`
+    : "(No active budget)";
 </script>
 
 <template>
     <AuthenticatedLayout>
-        <div class="contianer">
-            <div class="flex flex-col gap-4">
-                <div
-                    class="flex flex-col md:flex-row items-center md:items-stretch gap-2 mb-4"
-                >
-                    <StatCard
-                        label="Total Budget"
-                        :value="`${props.data.currency}`"
-                        :icon="Landmark"
-                        class="w-1/3"
-                    />
-                    <StatCard
-                        label="Total Montly Expenses"
-                        :value="`${props.data?.currency} ${
-                            props.data?.expenses_monthly ?? 0
-                        }`"
-                        :icon="Banknote"
-                        class="w-1/3"
-                    />
-                    <StatCard
-                        label="Total Yearly Expenses"
-                        :value="`${props.data?.currency} ${
-                            props.data?.expenses_yearly ?? 0
-                        }`"
-                        :icon="PiggyBank"
-                        class="w-1/3"
-                    />
-                </div>
-
-                <div class="mb-4 flex gap-2 justify-end">
-                    <Button
-                        :href="route('expense.index')"
-                        class="inline-flex items-center gap-2"
+        <div class="flex flex-col gap-6">
+            <div
+                class="flex flex-col sm:flex-row gap-4 justify-between items-center"
+            >
+                <span>
+                    <h1
+                        class="text-3xl font-bold text-gray-800 dark:text-gray-100"
                     >
-                        <Plus /> Expenses
-                    </Button>
+                        Financial Overview
+                    </h1>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Monthly and yearly totals include only expenses assigned
+                        to the active budget and recorded within the current
+                        month or year.
+                    </p>
+                </span>
 
+                <div class="flex gap-3">
                     <Button
                         :href="route('expense.index')"
+                        class="inline-flex items-center gap-2 px-4 py-2"
+                        variant="primary"
+                    >
+                        <Plus class="w-5 h-5" /> Add Expense
+                    </Button>
+                    <Button
+                        :href="route('budget.index')"
                         variant="secondary"
-                        class="inline-flex items-center gap-2"
+                        class="inline-flex items-center gap-2 px-4 py-2"
                     >
-                        <Plus /> Budgets
+                        <Landmark class="w-5 h-5" /> Budgets
                     </Button>
                 </div>
+            </div>
 
-                <div class="flex gap-2">
-                    <div class="w-2/3">
-                        <Label size="lg">Budgets</Label>
-                        <Table :headers="['ID', 'Amount Limit', 'Date']">
-                            <tr
-                                class="border-b hover:bg-gray-50 dark:hover:text-gray-700"
-                            >
-                                <td class="px-4 py-3">1</td>
-                                <td class="px-4 py-3">10000</td>
-                                <td class="px-4 py-3">12/2025</td>
-                            </tr>
-                        </Table>
-                    </div>
-                    <div class="w-2/3">
-                        <Label size="lg">Expenses</Label>
-                        <Table
-                            :headers="[
-                                'ID',
-                                'Category',
-                                'Amount',
-                                'Description',
-                                'Date',
-                            ]"
+            <hr class="border-gray-200 dark:border-gray-700" />
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatCard
+                    label="Current Budget Limit"
+                    :value="`${$page.props.auth.user.currency} ${formatAmount(
+                        props.data?.active_budget?.amount_limit ?? 0
+                    )}`"
+                    :icon="Landmark"
+                    :helper-text="activeBudgetDateRange"
+                    :is_active="true"
+                    class="shadow-lg"
+                />
+
+                <StatCard
+                    label="Remaining Budget"
+                    :value="`${$page.props.auth.user.currency} ${formatAmount(
+                        props.remainingAmount ?? 0
+                    )}`"
+                    :icon="PiggyBank"
+                    helper-text="Remaining amount for active budget"
+                    class="shadow-lg"
+                />
+
+                <StatCard
+                    label="Total Monthly Expenses"
+                    :value="`${$page.props.auth.user.currency} ${formatAmount(
+                        props.data?.expenses_monthly ?? 0
+                    )}`"
+                    :icon="Banknote"
+                    helper-text="This calendar month's spend"
+                    class="shadow-lg"
+                />
+
+                <StatCard
+                    label="Total Yearly Expenses"
+                    :value="`${$page.props.auth.user.currency} ${formatAmount(
+                        props.data?.expenses_yearly ?? 0
+                    )}`"
+                    :icon="TrendingDown"
+                    helper-text="Year-to-date total spend"
+                    class="shadow-lg"
+                />
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-6 mt-4">
+                <div class="w-full lg:w-1/2">
+                    <Label
+                        size="lg"
+                        class="mb-3 block text-xl font-semibold text-gray-700 dark:text-gray-200"
+                        >Recent Expenses</Label
+                    >
+                    <Table
+                        :headers="['Category', 'Amount', 'Description', 'Date']"
+                    >
+                        <tr
+                            v-for="expense in props.data?.expenses"
+                            :key="expense.id"
+                            class="border-b hover:bg-gray-50 dark:hover:bg-gray-700 dark:hover:text-gray-50 transition duration-150"
                         >
-                            <tr
-                                class="border-b hover:bg-gray-50 dark:hover:text-gray-700"
-                                v-for="expense in props.data?.expenses"
+                            <td class="px-4 py-3 font-medium">
+                                {{ expense?.category.name }}
+                            </td>
+                            <td class="px-4 py-3 text-red-600 font-semibold">
+                                {{ $page.props.auth.user.currency }}
+                                {{ formatAmount(expense.amount) }}
+                            </td>
+                            <td
+                                class="px-4 py-3 max-w-xs truncate text-sm text-gray-500 dark:text-gray-400"
                             >
-                                <td class="px-4 py-3">{{ expense.id }}</td>
-                                <td class="px-4 py-3">
-                                    {{ expense?.category.name }}
-                                </td>
-                                <td class="px-4 py-3">{{ expense.amount }}</td>
-                                <td class="px-4 py-3">
-                                    {{ expense.description }}
-                                </td>
-                                <td class="px-4 py-3">
-                                    {{ expense.expenses_date }}
-                                </td>
-                            </tr>
-                        </Table>
-                    </div>
+                                {{ expense.description || "N/A" }}
+                            </td>
+                            <td
+                                class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400"
+                            >
+                                {{
+                                    dayjs(expense.expenses_date).format(
+                                        "MMM D, YYYY"
+                                    )
+                                }}
+                            </td>
+                        </tr>
+                        <tr
+                            v-if="
+                                !props.data?.expenses ||
+                                props.data?.expenses.length === 0
+                            "
+                        >
+                            <td
+                                colspan="4"
+                                class="px-4 py-6 text-center text-gray-500 dark:text-gray-400"
+                            >
+                                No recent expenses found. Add one now!
+                            </td>
+                        </tr>
+                    </Table>
+                </div>
+
+                <div class="w-full lg:w-1/2">
+                    <Label
+                        size="lg"
+                        class="mb-3 block text-xl font-semibold text-gray-700 dark:text-gray-200"
+                        >Budgets</Label
+                    >
+                    <Table :headers="['Amount Limit', 'Source', 'Set Date']">
+                        <tr
+                            v-for="budget in props.data?.budgets"
+                            :key="budget.id"
+                            class="border-b hover:bg-gray-50 dark:hover:bg-gray-700 dark:hover:text-gray-50 transition duration-150"
+                        >
+                            <td class="px-4 py-3 text-green-600 font-semibold">
+                                {{ $page.props.auth.user.currency }}
+                                {{ formatAmount(budget.amount_limit ?? 0) }}
+                            </td>
+                            <td class="px-4 py-3 font-medium">
+                                {{ budget.source || "N/A" }}
+                            </td>
+                            <td
+                                class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400"
+                            >
+                                {{
+                                    dayjs(budget.created_at).format(
+                                        "MMM D, YYYY"
+                                    )
+                                }}
+                            </td>
+                        </tr>
+                        <tr
+                            v-if="
+                                !props.data?.budgets ||
+                                props.data?.budgets.length === 0
+                            "
+                        >
+                            <td
+                                colspan="3"
+                                class="px-4 py-6 text-center text-gray-500 dark:text-gray-400"
+                            >
+                                No recent budget entries found.
+                            </td>
+                        </tr>
+                    </Table>
                 </div>
             </div>
         </div>

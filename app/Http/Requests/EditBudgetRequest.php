@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreBudgetRequest extends FormRequest
+class EditBudgetRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,7 +16,6 @@ class StoreBudgetRequest extends FormRequest
         }
 
         return false;
-
     }
 
     /**
@@ -27,20 +26,8 @@ class StoreBudgetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount_limit' => ['required', 'numeric'],
-            'source' => ['required', 'string'],
+            'source' => ['required', 'string', 'max:255'],
+            'amount_limit' => ['required', 'numeric', 'min:0'],
         ];
-    }
-
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-
-        $this->merge([
-            'source' => ucfirst($this->input('source')),
-        ]);
-
     }
 }
