@@ -38,6 +38,11 @@ class Expense extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function budget()
+    {
+        return $this->belongsTo(Budget::class);
+    }
+
     public function scopeYearlyExpenses(Builder $query)
     {
         return $query->whereYear('created_at', now()->year);

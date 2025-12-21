@@ -21,7 +21,7 @@ const props = defineProps({
     },
     method: {
         type: String,
-        default: "post",
+        default: "get",
     },
 });
 
@@ -47,7 +47,6 @@ const classes = computed(() => {
         :href="href"
         :class="[classes, disabled ? 'opacity-50 cursor-not-allowed' : '']"
         :disabled="disabled"
-        as="button"
     >
         <slot />
     </Link>

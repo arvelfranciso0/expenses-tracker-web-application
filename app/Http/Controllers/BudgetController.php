@@ -60,16 +60,23 @@ class BudgetController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Budget $budget) {}
+    public function edit(UpdateBudgetRequest $request, Budget $budget) {}
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBudgetRequest $request, $id)
+    public function update(UpdateBudgetRequest $request, Budget $budget): RedirectResponse
     {
 
-        $budget = Budget::findOrFail($id);
+        $validated = $request->validated();
 
+        $budget->update($validated);
+
+        return Redirect::route('budget.index')->with('success', 'Update successfully!');
+    }
+
+    public function activate(Budget $budget)
+    {
         $this->authorize('update', $budget);
 
         if ($budget->is_active) {

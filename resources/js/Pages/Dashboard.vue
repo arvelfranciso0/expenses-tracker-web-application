@@ -16,6 +16,7 @@ import { formatAmount } from "@/composables/useCurrency";
 
 const props = defineProps({
     data: Object,
+    remainingAmount: Number,
 });
 
 // Helper for the helper text
@@ -32,9 +33,19 @@ const activeBudgetDateRange = props.data?.active_budget
             <div
                 class="flex flex-col sm:flex-row gap-4 justify-between items-center"
             >
-                <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100">
-                    Financial Overview
-                </h1>
+                <span>
+                    <h1
+                        class="text-3xl font-bold text-gray-800 dark:text-gray-100"
+                    >
+                        Financial Overview
+                    </h1>
+                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                        Monthly and yearly totals include only expenses assigned
+                        to the active budget and recorded within the current
+                        month or year.
+                    </p>
+                </span>
+
                 <div class="flex gap-3">
                     <Button
                         :href="route('expense.index')"
@@ -63,13 +74,14 @@ const activeBudgetDateRange = props.data?.active_budget
                     )}`"
                     :icon="Landmark"
                     :helper-text="activeBudgetDateRange"
-                    class="shadow-lg border border-indigo-100 dark:border-indigo-900 bg-indigo-50 dark:bg-indigo-950/50"
+                    :is_active="true"
+                    class="shadow-lg"
                 />
 
                 <StatCard
                     label="Remaining Budget"
                     :value="`${$page.props.auth.user.currency} ${formatAmount(
-                        props.data?.another_metric ?? 0
+                        props.remainingAmount ?? 0
                     )}`"
                     :icon="PiggyBank"
                     helper-text="Remaining amount for active budget"
@@ -154,7 +166,7 @@ const activeBudgetDateRange = props.data?.active_budget
                     <Label
                         size="lg"
                         class="mb-3 block text-xl font-semibold text-gray-700 dark:text-gray-200"
-                        >Recent Budgets</Label
+                        >Budgets</Label
                     >
                     <Table :headers="['Amount Limit', 'Source', 'Set Date']">
                         <tr

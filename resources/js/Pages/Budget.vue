@@ -1,25 +1,46 @@
 <script setup>
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import Select from "@/Components/Select.vue";
 import Label from "@/Components/Label.vue";
 import Section from "@/Components/Section.vue";
 import TextInput from "@/Components/TextInput.vue";
 import Button from "@/Components/Button.vue";
 import Table from "@/Components/Table.vue";
 import { useForm, router } from "@inertiajs/vue3";
-
+import Modal from "@/Components/Modal.vue";
 import dayjs from "dayjs";
 import { formatAmount } from "@/composables/useCurrency";
+import { ref } from "vue";
 
 const props = defineProps({
     budgets: Array,
     activeBudget: Object,
 });
+const showModal = ref(false);
+const selectedBudget = ref(null);
 
 const budgetForm = useForm({
     amount_limit: "",
     source: "",
 });
+
+const editBudgetForm = useForm({
+    amount_limit: "",
+    source: "",
+});
+
+const openEditBudgetModal = (budget) => {
+    selectedBudget.value = { ...budget };
+    editBudgetForm.reset();
+    editBudgetForm.source = budget.source;
+    editBudgetForm.amount_limit = budget.amount_limit;
+    showModal.value = true;
+    console.log(budget);
+};
+
+const closeEditBudgetModal = () => {
+    showModal.value = false;
+    selectedBudget.value = null;
+};
 
 const submitBudget = () => {
     budgetForm.post(
@@ -33,7 +54,7 @@ const submitBudget = () => {
 };
 
 const handleUpdateStatus = (id) => {
-    router.patch(route("budget.update", id), {
+    router.patch(route("budget.activate", id), {
         onSuccess: () => {
             console.log("Success");
         },
@@ -172,7 +193,12 @@ const handleDeleteBudget = (id) => {
                         </td>
 
                         <td class="px-6 py-4 text-sm space-x-2">
-                            <Button type="button"> Edit </Button>
+                            <Button
+                                type="button"
+                                @clicked="openEditBudgetModal(budget)"
+                            >
+                                Edit
+                            </Button>
                             <Button
                                 type="button"
                                 variant="danger"
@@ -193,5 +219,62 @@ const handleDeleteBudget = (id) => {
                 </Table>
             </div>
         </Section>
+
+        <Modal :show="showModal" @close="closeEditBudgetModal">
+            <template v-if="selectedBudget">
+                <form
+                    @submit.prevent="
+                        editBudgetForm.put(
+                            route('budget.update', selectedBudget.id),
+                            {
+                                onSuccess: () => {
+                                    closeEditBudgetModal();
+                                },
+                            }
+                        )
+                    "
+                    class="space-y-4"
+                >
+                    <div class="p-6">
+                        <div>
+                            <Label size="sm" for="source" class="mt-3"
+                                >Budget Name</Label
+                            >
+                            <TextInput
+                                id="source"
+                                type="text"
+                                v-model="editBudgetForm.source"
+                                placeholder="Enter budget name"
+                                class="mt-1 block w-full"
+                            />
+                        </div>
+
+                        <div>
+                            <Label size="sm" for="amount_limit" class="mt-3"
+                                >Amount</Label
+                            >
+                            <TextInput
+                                id="amount_limit"
+                                v-model="editBudgetForm.amount_limit"
+                                type="number"
+                                placeholder="Enter budget amount"
+                                class="mt-1 block w-full"
+                            />
+                        </div>
+
+                        <div class="mt-6 flex justify-end gap-2">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                @click="closeEditBudgetModal"
+                            >
+                                Cancel
+                            </Button>
+                            <Button type="submit"> Edit Budget </Button>
+                        </div>
+                    </div>
+                </form>
+            </template>
+        </Modal>
     </AuthenticatedLayout>
 </template>

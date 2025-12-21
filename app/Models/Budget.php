@@ -34,6 +34,11 @@ class Budget extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class);
+    }
+
     public function scopeCurrentUser(Builder $query): void
     {
         $query->where('user_id', auth()->id());

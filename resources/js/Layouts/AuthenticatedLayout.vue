@@ -39,8 +39,6 @@ const applyTheme = () => {
     const root = document.documentElement;
     isDark.value ? root.classList.add("dark") : root.classList.remove("dark");
 };
-
-console.log(page.props.flash);
 watch(
     () => page.props.flash,
     (flash) => {

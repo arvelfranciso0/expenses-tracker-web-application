@@ -40,8 +40,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/budget', [BudgetController::class, 'index'])->name('budget.index');
     Route::post('/budget', [BudgetController::class, 'store'])->name('budget.store');
-    Route::patch('/budget/{id}', [BudgetController::class, 'update'])->name('budget.update');
+    Route::put('/budget/{budget}', [BudgetController::class, 'update'])->name('budget.update');
     Route::delete('/budget/{id}', [BudgetController::class, 'destroy'])->name('budget.destroy');
+    Route::patch('/budget/{budget}/activate', [BudgetController::class, 'activate'])->name('budget.activate');
 });
 
 Route::middleware('auth')->group(function () {
